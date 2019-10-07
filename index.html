@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Pick</title>
+    <style type="text/css">
+        #unsorted {
+            color: #00FF00;
+            font-size: 24px;
+        }
+
+        #sorted {
+            color: #FF0000;
+            font-size: 24px;
+        }
+    </style>
+    <script type="text/javascript">
+        all_nums = new Array();
+        pic_five = new Array();
+        lucky = 0;
+
+        function load_unsorted() {
+            nums = 6;
+            for (i = 0; i < nums - 1; i++) {
+                curr = Math.floor(Math.random() * 48 + 1);
+                all_nums.push(curr);
+                pic_five.push(curr);
+            }
+            lucky = Math.floor(Math.random() * 18 + 1);
+            all_nums.push(lucky);
+            unsorted = document.getElementById("unsorted");
+            display_nums = "";
+            for (i = 0; i < nums; i++) {
+                display_nums += all_nums[i] + " ";
+            }
+            p_node = document.createElement("P");
+            num_node = document.createTextNode(display_nums);
+            p_node.appendChild(num_node);
+            unsorted.appendChild(p_node);
+        }
+
+        function load_sorted() {
+            all_nums.sort((a, b) => a - b);
+            pic_five.sort((a, b) => a - b);
+            sorted = document.getElementById("sorted");
+            display_nums = "";
+            for (i = 0; i < nums; i++) {
+                display_nums += all_nums[i] + " ";
+            }
+            p_node = document.createElement("P");
+            num_node = document.createTextNode(display_nums);
+            p_node.appendChild(num_node);
+            sorted.appendChild(p_node);
+        }
+
+        function init() {
+            load_unsorted();
+            load_sorted();
+        }
+
+        function parse_numbers() {
+            user_five_str = document.getElementById("pic_five").value;
+            user_five = user_five_str.split(" ");
+            user_lucky = parseInt(document.getElementById("lucky_num").value);
+
+            for (i = 0; i < user_five.length; i++) {
+                user_five[i] = parseInt(user_five[i]);
+            }
+            user_five.sort((a, b) => a - b);
+            num_match = 0;
+            is_lucky = false;
+            if (user_lucky == lucky) {
+                is_lucky = true;
+            }
+            console.log(user_five.length);
+            for (i = 0; i < user_five.length; i++) {
+                if (pic_five[i] == user_five[i]) {
+                    num_match++;
+                }
+            }
+
+            calculate_payout(num_match, is_lucky);
+
+        }
+
+        function calculate_payout(five_match, is_lucky) {
+            results = document.getElementById("results");
+            p_node = document.getElementById("payment");
+            if (is_lucky) {
+                switch (five_match) {
+                    case 0:
+                        p_node.innerHTML = "$4";
+                        break;
+                    case 1:
+                        p_node.innerHTML = "$6";
+                        break;
+                    case 2:
+                        p_node.innerHTML = "$25";
+                        break;
+                    case 3:
+                        p_node.innerHTML = "$150";
+                        break;
+                    case 4:
+                        p_node.innerHTML = "$5,000";
+                        break;
+                    case 5:
+                        p_node.innerHTML = "$7,000/week for life!";
+                        break;
+                    default:
+                        p_node.innerHTML = "Error: Could not match numbers.";
+                }
+            }
+            else {
+                switch (five_match) {
+                    case 0:
+                        p_node.innerHTML = "$0 :'(";
+                        break;
+                    case 1:
+                        p_node.innerHTML = "$0 :'( sad";
+                        break;
+                    case 2:
+                        p_node.innerHTML = "$3";
+                        break;
+                    case 3:
+                        p_node.innerHTML = "$20";
+                        break;
+                    case 4:
+                        p_node.innerHTML = "$200";
+                        break;
+                    case 5:
+                        p_node.innerHTML = "$25,000/year for life!";
+                        break;
+                    default:
+                        p_node.innerHTML = "Error: Could not match numbers.";
+                }
+            }
+        }
+
+    </script>
+</head>
+<body onload="init();">
+<a href="#">Lottery</a>
+<a href="hotdogs.html">Joe's Hotdogs</a>
+
+<div id="unsorted">
+    <label>Unsorted: </label>
+</div>
+<div id="sorted">
+    <label>Sorted: </label>
+</div>
+
+<div id="payout">
+    <form>
+        <label>Enter 5 numbers separated by a space: </label><input type="text"name="pic_five" id="pic_five"><br>
+        <label>Enter 1 number: </label><input type="text" name="lucky_num" id="lucky_num">
+        <input type="button" name="submit" value="Submit" onclick="parse_numbers();">
+    </form>
+
+    <div id="results"><label>Payout ca$h money 💰:</label><p id="payment"></p></div>
+</div>
+
+
+</body>
+</html>
+

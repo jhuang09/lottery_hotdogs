@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Joe's Hotdogs</title>
+    <script type="text/javascript">
+        prices = {"hotdogs": 3.25, "fries": 2, "drinks": 1.50};
+        quantities = {"hotdogs": 0, "fries": 0, "drinks": 0};
+        tax = 0.0625;
+        discount = 0.1;
+        min_order = 20;
+
+        function calculate_order() {
+            num_dogs = parseInt(document.getElementById("hotdogs").value);
+            num_fries = parseInt(document.getElementById("fries").value);
+            num_drinks = parseInt(document.getElementById("drinks").value);
+            quantities["hotdogs"] = num_dogs;
+            quantities["fries"] = num_fries;
+            quantities["drinks"] = num_drinks;
+
+            total = 0;
+            for (key in prices) {
+                total += quantities[key] * prices[key];
+            }
+            discount_total = apply_discount(total);
+            console.log("discount: " + discount_total);
+            tax_total = add_tax(discount_total);
+
+            display_results(total, discount_total, tax_total);
+        }
+
+        function add_tax(total) {
+            return total * (1 + tax);
+        }
+
+        function apply_discount(total) {
+            if (total >= min_order) {
+                total *= (1 - discount);
+            }
+            return total;
+        }
+
+        function display_results(orig, discount, tax_total) {
+            document.getElementById("display").style.display = "block";
+            display_order = document.getElementById("disp_order");
+            display_money = document.getElementById("disp_money");
+            display_total = document.getElementById("disp_total");
+            results = "You ordered: ";
+            money = "Your subtotal was: $" + orig;
+            total = "";
+
+            for (key in prices) {
+                results += quantities[key] + " " + 
+                           (quantities[key] == 1 ? 
+                            (key == "fries" ? 
+                                "fry" : 
+                                key.substring(0, key.length - 1)) : 
+                            key);
+                (key != "drinks" ? results += ", " : results += ".");
+            }
+
+            (discount != orig ? money += " and hooray! you got a 10% discount! ": money += ". ")
+            money += "The sales tax was " + (tax * 100).toFixed(2) + "%."
+            total += "Your total is: $" + tax_total.toFixed(2);
+
+            display_order.innerHTML = results;
+            display_money.innerHTML = money;
+            display_total.innerHTML = total;
+        }
+
+    </script>
+    <style type="text/css">
+        html, body {
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 50%;
+        }
+
+        #menu {
+            background-color: #383631;
+            color: #ebb434;
+            width: 100%;
+            padding: 0.5% 4% 0.5% 0%;
+        }
+
+        #menu h2 {
+            text-align: center;
+        }
+
+        li {
+            list-style: none;
+            color: #ebb434;
+        }
+        ul label {
+            color: #ebb434;
+            float: right;
+        }
+        form {
+            padding: 1% 0%;
+        }
+
+        #display {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #d0d6d1;
+            color: #454775;
+            padding: 1%;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="index.html">Lottery</a>
+    <a href="#">Joe's Hotdogs</a>
+
+    <div id="menu">
+        <h2>Menu</h2>
+        <ul>
+            <li>Hotdogs <label>3.25</label></li>
+            <li>Fries <label>2</label></li>
+            <li>Drinks <label>1.5</label></li>
+        </ul>
+    </div>
+    <h1>Place your order here:</h1>
+    <form>
+        <div><label>Number of hotdogs:</label><input id="hotdogs" type="text" name="hotdogs" placeholder="1"></div>
+        <div><label>Number of fries:</label><input id="fries" type="text" name="fries" placeholder="1"></div>
+        <div><label>Number of drinks:</label><input id="drinks" type="text" name="drinks" placeholder="1"></div>
+        <input type="button" name="submit" value="Order" onclick="calculate_order();">
+    </form>
+    <div id="display" style="display: none;">
+        <p id="disp_order"></p>
+        <p id="disp_money"></p>
+        <p id="disp_total"></p>
+    </div>
+</body>
+</html>
+
